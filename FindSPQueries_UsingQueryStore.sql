@@ -23,6 +23,9 @@
   PARTICULAR PURPOSE.
 =======================================================================================================================*/
 
+/*
+	Enable Query Store
+*/
 ALTER DATABASE [WideWorldImporters] 
 	SET QUERY_STORE = ON;
 GO
@@ -41,6 +44,9 @@ ALTER DATABASE [WideWorldImporters]
 	SET QUERY_STORE CLEAR;
 GO
 
+/*
+	Create SP for testing
+*/
 USE [WideWorldImporters];
 GO
 
@@ -114,6 +120,10 @@ AS
 
 GO
 
+
+/*
+	Run SP with different input parameters
+*/
 EXEC [Sales].[usp_GetCustomerDetail] N'Alvin Bollinger';
 GO 10
 
@@ -127,6 +137,9 @@ EXEC [Sales].[usp_GetCustomerDetail] N'Tara Kotadia';
 GO 10
 
 
+/*
+	Check to see what queries exist for the SP
+*/
 SELECT
 	[qsq].[query_id], 
 	[qsp].[plan_id], 
@@ -142,6 +155,9 @@ WHERE [qsq].[object_id] = OBJECT_ID(N'Sales.usp_GetCustomerDetail');
 GO
   
 
+/*
+	Look at runtime stats for each query in the SP
+*/
 SELECT
 	[qsq].[query_id], 
 	[qsp].[plan_id], 
@@ -172,6 +188,11 @@ ORDER BY [qsq].[query_id], [qsp].[plan_id], [rs].[runtime_stats_interval_id];
 GO
 
 
+					 
+
+/*
+	Run the SP for a while to create more data
+*/
 DECLARE @CustomerID INT = 801
 DECLARE @CustomerName NVARCHAR(100)
 
@@ -196,6 +217,9 @@ BEGIN
 END
 
 
+/*
+	Check aggregate runtime stats for the SP
+*/
 SELECT
 	[qsq].[query_id], 
 	[qsp].[plan_id], 
